@@ -1,0 +1,21 @@
+<button mat-mini-fab (click)="delete()"><mat-icon fontIcon="delete"></mat-icon></button>
+
+<mat-card *ngIf="image; else text">
+  <mat-card-content>
+    <img [src]="imgSrc$ | async" [alt]="image.name" (load)="updSize()">
+  </mat-card-content>
+</mat-card>
+
+<ng-template #text>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-label>Leave a comment</mat-label>
+      </div>
+      <textarea matInput placeholder="Ex. It makes me feel..."
+                rows="5"
+                (input)="changeText($event)"></textarea>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
+

@@ -1,0 +1,6 @@
+<mat-action-list>
+  <button type="button" mat-list-item (click)="fileInput.click()">Image</button>
+  <input hidden (change)="onImageSelected($event)" #fileInput type="file" accept="image/png, image/jpeg">
+
+  <button mat-list-item (click)="onTextSelected()">Text</button>
+</mat-action-list>

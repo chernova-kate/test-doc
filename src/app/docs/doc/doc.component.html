@@ -1,0 +1,46 @@
+<ng-container *ngIf="doc$ | async as doc">
+  <mat-toolbar>
+    <mat-toolbar-row>
+      <button mat-icon-button [disabled]="scale >= 200" (click)="zoomIn()">
+        <mat-icon fontIcon="add"></mat-icon>
+      </button>
+      <button mat-icon-button [disabled]="scale <= 10" (click)="zoomOut()">
+        <mat-icon fontIcon="remove"></mat-icon>
+      </button>
+      <span class="title">{{ doc.name }}</span>
+      <span class="spacer"></span>
+      <button mat-raised-button color="primary" (click)="saveData()">Save</button>
+    </mat-toolbar-row>
+
+    <mat-toolbar-row>
+      <span>You are on a page: {{ ((currentPage$ | async) || 0) + 1 }}</span>
+      <span class="spacer"></span>
+      <button mat-raised-button color="accent" (click)="selectAnnotationType()">Add annotation</button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div class="container"
+       [style.transform]="'scale(' + scale / 100 + ')'">
+    <div *ngFor="let page of doc.pages; let i=index" class="page">
+      <mat-card class="item">
+        <div>
+          <img [src]="'data:image/png;base64,' + page.image"
+               [style.width]="page.width + 'px'"
+               alt="">
+        </div>
+      </mat-card>
+
+      <ng-container *ngIf="(annotations$ | async)?.[i] as annotations">
+        <app-annotation *ngFor="let annotation of annotations | keyvalue; trackBy: trackByFn"
+                        cdkDrag cdkDragBoundary=".page"
+                        [annotation]="annotation.value"
+                        (cdkDragEnded)="updAnnotation(i, annotation.key, { position: { x: $event.dropPoint.x, y: $event.dropPoint.y } })"
+                        (updateAnnotationContent)="updAnnotation(i, annotation.key, { content: $event })"
+                        (annotationRendered)="updAnnotation(i, annotation.key, { size: $event })"
+                        (deleteAnnotation)="deleteAnnotation(i, annotation.key)"></app-annotation>
+      </ng-container>
+
+    </div>
+
+  </div>
+</ng-container>
